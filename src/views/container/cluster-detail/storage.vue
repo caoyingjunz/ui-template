@@ -176,6 +176,7 @@
   } from 'element-plus'
   import { CopyDocument } from '@element-plus/icons-vue'
   import yaml from 'js-yaml'
+  import type { ColumnOption } from '@/types/component'
   import { computed, h, inject, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useTable } from '@/hooks/core/useTable'
@@ -370,7 +371,7 @@
   })
 
   const pvcVisibleColumns = computed(() =>
-    pvcColumns.value.filter((c) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
+    pvcColumns.value.filter((c: ColumnOption) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
   )
   function runPvcSearch() {
     const name = (pvcSearchForm.value.name ?? '').trim() || undefined

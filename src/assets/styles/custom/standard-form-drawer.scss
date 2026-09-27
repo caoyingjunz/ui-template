@@ -1,0 +1,43 @@
+/*
+ * 标准表单抽屉模板（全局样式，非 scoped，直接全局生效）
+ *
+ * 用途：为「编辑 / 详情配置」类表单提供统一的右侧抽屉骨架，与「标准表单弹窗」
+ *       （standard-form-dialog）共用同一套 12px 字号体系，避免各页面各写一份。
+ *
+ * 使用方式：
+ *   - ElDrawer 挂 class="standard-form-drawer"（direction="rtl"、size 建议 560px、destroy-on-close）
+ *   - ElForm   复用 class="standard-form-dialog__form"（label-position="right"；
+ *     首个 ElFormItem 挂 class="standard-form-dialog__form-first"）
+ *   - footer 用 #footer 插槽（取消 / 确定），本模板已带顶部 1px 分隔线
+ *   - label-width 按最长 label 字数定：80px 适配 ≤5 字，96px 适配 6-7 字，保证不换行
+ *
+ * 注意：ElDrawer 的 class 不经过页面 scoped 样式，故本模板必须为全局样式。
+ */
+
+/* 抽屉骨架：body 上边距 6px 收紧标题与首项间距；footer 带分隔线 */
+.standard-form-drawer.el-drawer .el-drawer__body {
+  padding: 6px 16px 0 !important;
+}
+
+.standard-form-drawer.el-drawer .el-drawer__footer {
+  padding: 12px 16px 16px !important;
+  border-top: 1px solid var(--el-border-color-lighter);
+}
+
+/* 消除 ElForm 模板类自带的上留白（弹窗用 12px，抽屉里会与标题叠出过大空白） */
+.standard-form-drawer.el-drawer .el-drawer__body .standard-form-dialog__form {
+  padding-top: 0;
+}
+
+.standard-form-drawer.el-drawer .el-drawer__body .standard-form-dialog__form-first {
+  margin-top: 0;
+}
+
+/* 表单项间距对齐页面内容区行距；首项与下一项更紧用 8px */
+.standard-form-drawer.el-drawer .el-drawer__body .el-form-item {
+  margin-bottom: 14px;
+}
+
+.standard-form-drawer.el-drawer .el-drawer__body .standard-form-dialog__form-first {
+  margin-bottom: 8px;
+}

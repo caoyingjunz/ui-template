@@ -1,0 +1,67 @@
+/*
+ * 表格工具条与操作列模板（全局样式，非 scoped，直接全局生效）
+ *
+ * 用途：为列表页的「批量操作栏」与表格操作列提供统一规格，避免各页面各写一份。
+ *
+ * 批量操作栏用法（浮出式 + 智能显隐）：
+ *   - 未选中：工具栏左侧只渲染主操作按钮，批量区整体不渲染（不要再常驻一排 :disabled 灰按钮）
+ *   - 选中后：批量区在原位浮出，同一行横向排列
+ *       「已选 N 项」→「清空」→ 批量按钮，间距沿用容器 gap
+ *   - 互斥操作智能显隐：选中项全部为同一状态时只给反向操作，混合状态时两个都给
+ *   - 危险操作（删除）始终显示、置于末尾
+ *   - 显隐归显隐、可点归可点：显隐 computed 不要掺入「是否可点」，
+ *     :disabled 只承担防并发，:loading 仍绑各自动作
+ *
+ * 操作列「更多」下拉：本模板只负责触发器（.table-more-link）样式；
+ *   下拉面板 teleport 到 body，面板内样式需写在页面的全局（非 scoped）样式块里。
+ */
+
+/* 批量操作栏（浮出式）左区：容器 gap 15px + 重置相邻按钮默认 margin，两条缺一会叠成 27px */
+.table-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+
+  .el-button + .el-button {
+    margin-left: 0;
+  }
+}
+
+/* 「已选 N 项」文本 */
+.table-toolbar__selected {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  white-space: nowrap;
+}
+
+/* 操作列动作容器：gap 12px、12px 字号、不换行 */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  font-size: 12px;
+
+  .el-link {
+    font-size: 12px;
+  }
+}
+
+/* 操作列「更多」触发器：与操作列 ElLink 同规格（12px / primary / 无下划线） */
+.table-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--el-color-primary);
+  cursor: pointer;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+}

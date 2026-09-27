@@ -61,17 +61,23 @@ export default ({ mode }: { mode: string }) => {
         '@styles': resolvePath('src/assets/styles')
       }
     },
+    // 生产构建去除 console / debugger（esbuild 压缩，构建速度优于 terser）
+    // 仅生产生效：esbuild 顶层选项在 dev 转译时同样生效，不能影响开发期调试输出
+    esbuild: mode === 'production' ? { drop: ['console', 'debugger'] } : {},
     build: {
       target: 'es2015',
       outDir: 'dist',
-      chunkSizeWarningLimit: 2000,
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          // 生产环境去除 console
-          drop_console: true,
-          // 生产环境去除 debugger
-          drop_debugger: true
+      chunkSizeWarningLimit: 800,
+      minify: 'esbuild',
+      reportCompressedSize: false,
+      rollupOptions: {
+        output: {
+          // 只拆框架级大头依赖，避免碎片 chunk；element-plus 保持自动按需分块，勿手动聚合
+          manualChunks: {
+            'vendor-vue': ['vue', 'vue-router', 'pinia', '@vueuse/core'],
+            'vendor-i18n': ['vue-i18n'],
+            'vendor-http': ['axios']
+          }
         }
       },
       dynamicImportVarsOptions: {

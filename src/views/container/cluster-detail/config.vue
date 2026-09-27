@@ -127,6 +127,7 @@
   } from 'element-plus'
   import { CopyDocument } from '@element-plus/icons-vue'
   import yaml from 'js-yaml'
+  import type { ColumnOption } from '@/types/component'
   import { computed, h, inject, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useTable } from '@/hooks/core/useTable'
@@ -319,7 +320,7 @@
   })
 
   const cmVisibleColumns = computed(() =>
-    cmColumns.value.filter((c) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
+    cmColumns.value.filter((c: ColumnOption) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
   )
   function runCmSearch() {
     const name = (cmSearchForm.value.name ?? '').trim() || undefined
@@ -425,7 +426,7 @@
   })
 
   const secVisibleColumns = computed(() =>
-    secColumns.value.filter((c) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
+    secColumns.value.filter((c: ColumnOption) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
   )
   function runSecSearch() {
     const name = (secSearchForm.value.name ?? '').trim() || undefined

@@ -1,0 +1,259 @@
+/*
+ * 详情页 / 列表页骨架模板（全局样式，非 scoped，直接全局生效）
+ *
+ * 用途：为「左侧信息大卡 + 右侧/下方 Tab 表格」形态的详情页，以及同构的列表页
+ *       工具条与类型列提供统一骨架，避免各页面各写一份相似样式。
+ *
+ * 用法：页面根容器挂 class="detail-page"，内部信息卡片挂 .detail-card
+ *       （信息卡加 .detail-card--info，Tab 表格卡加 .detail-card--tabs），
+ *       hero 区用 .detail-hero 及其 __ 子元素，基本信息键值区用 .kv-grid / .kv-item，
+ *       刷新 / 搜索等方形图标按钮挂 .detail-icon-btn。
+ *       页面特有样式仍写在页面 scoped 内，本模板只管可复用的骨架部分。
+ *
+ * 说明：本文件是全局样式，故不使用 Vue SFC 的 :deep()（在全局样式中无效），
+ *       统一写成普通后代选择器。teleport 到 body 的内容（下拉面板等）不在
+ *       .detail-page 作用域内，相关样式需另行处理，不属于本模板。
+ */
+
+/* ── 页面骨架 ── */
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 18px;
+  /* 内容自适应：覆盖 art-full-height 的固定视口高，页面随内容收缩，超高时自身滚动 */
+  height: auto;
+  max-height: var(--art-full-height);
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+/* 表格正文与表头统一 12px */
+.detail-page .el-table {
+  font-size: 12px;
+}
+
+.detail-page .el-link {
+  font-size: 12px;
+}
+
+/* ── 信息卡片 ── */
+.detail-card {
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid var(--el-border-color-lighter) !important;
+}
+
+/* 基础卡 body 不留白，由各变体自行给定 */
+.detail-card .el-card__body {
+  padding: 0;
+}
+
+/* 信息大卡：左右留白加大，与内部 hero 区对齐 */
+.detail-card--info .el-card__body {
+  padding: 16px 28px;
+}
+
+/* Tab 表格卡：顶部收紧，左右下沿用卡片默认留白 */
+.detail-card--tabs .el-card__body {
+  padding-top: 8px;
+  padding-left: var(--el-card-padding);
+  padding-right: var(--el-card-padding);
+  padding-bottom: var(--el-card-padding);
+}
+
+/* 卡片高度随内容自适应：行数决定高度，分页紧随表格（覆盖 ArtTable 默认 height:100%） */
+.detail-card--tabs .art-table {
+  height: auto !important;
+}
+
+.detail-card--tabs .art-table .el-table {
+  height: auto !important;
+}
+
+/* ── hero 区（logo + 名称行） ── */
+.detail-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.detail-hero__logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.detail-hero__main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.detail-hero__name-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+  margin-bottom: 6px;
+}
+
+.detail-hero__name {
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 名称行小 tag：11px 小字号、16px 高，紧贴名称 */
+.detail-hero__name-row .el-tag {
+  flex-shrink: 0;
+  font-size: 11px;
+  height: 16px;
+  line-height: 14px;
+  padding: 0 6px;
+}
+
+/* 相邻 tag 视觉收紧：抵消 20px gap，tag 之间视觉 8px */
+.detail-hero__name-row .el-tag + .el-tag {
+  margin-left: -12px;
+}
+
+/* 下载/点击次数等次要信息：13px 带图标 */
+.detail-hero__pull {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--el-text-color-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.detail-hero__time {
+  font-size: 12px;
+  color: var(--el-text-color-primary);
+}
+
+/* 描述：最多两行截断，避免长描述撑高 hero 大卡 */
+.detail-hero__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--el-text-color-regular);
+  word-break: break-word;
+  margin-bottom: 6px;
+}
+
+/* 类别 / 属性标签行：换行排列，间距 6px */
+.detail-hero__labels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+
+  .el-tag {
+    font-size: 11px;
+  }
+}
+
+/* hero 区 tag 统一圆角 */
+.detail-hero .el-tag {
+  border-radius: 8px;
+}
+
+/* hero 右上操作区：靠右对齐、不留白收缩 */
+.detail-hero__actions {
+  margin-left: auto;
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-shrink: 0;
+
+  .el-link {
+    font-size: 12px;
+  }
+}
+
+/* ── 基本信息键值区 ── */
+.kv-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 20px;
+  row-gap: 2px;
+  padding: 16px 0 8px;
+  max-width: 760px;
+  justify-content: start;
+}
+
+.kv-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 16px;
+  min-width: 0;
+}
+
+.kv-label {
+  width: 96px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  line-height: 1.8;
+}
+
+.kv-value {
+  flex: 1;
+  font-size: 13px;
+  color: var(--el-text-color-regular);
+  word-break: break-word;
+  line-height: 1.7;
+}
+
+/* ── 方形图标按钮（刷新 / 搜索共用） ── */
+.detail-icon-btn {
+  flex-shrink: 0;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--art-gray-300) 55%, transparent);
+  color: var(--el-text-color-secondary);
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--art-gray-300);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 1px;
+  }
+}
+
+/* ── 列表页类型列胶囊：单个实心 ElTag，12px ── */
+.detail-type-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+
+  .el-tag {
+    font-size: 12px;
+  }
+}

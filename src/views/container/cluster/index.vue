@@ -117,9 +117,9 @@
     4: { type: 'warning' as const, text: '集群失联' }
   }
 
-  const searchForm = ref({
-    clusterName: undefined as string | undefined,
-    status: undefined as string | undefined
+  const searchForm = ref<{ clusterName?: string; status?: string }>({
+    clusterName: undefined,
+    status: undefined
   })
   const addClusterVisible = ref(false)
   const selectedRows = ref<ClusterItem[]>([])
@@ -305,11 +305,12 @@
             h(ElSwitch, {
               modelValue: row.isProtected,
               loading: protectingIds.value.has(row.id),
-              onChange: async (val: boolean) => {
+              onChange: async (val: boolean | string | number) => {
+                const next = Boolean(val)
                 protectingIds.value.add(row.id)
                 try {
-                  await fetchProtectCluster(row.id, row.resourceVersion, val)
-                  ElMessage.success(val ? '已开启保护' : '已关闭保护')
+                  await fetchProtectCluster(row.id, row.resourceVersion, next)
+                  ElMessage.success(next ? '已开启保护' : '已关闭保护')
                   refreshData()
                 } catch (e: any) {
                   ElMessage.error(e.message || '操作失败')

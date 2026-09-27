@@ -34,10 +34,12 @@
  * @module utils/sys/upgrade
  * @author Pixiu Cloud Team
  */
-import { upgradeLogList } from '@/mock/upgrade/changeLog'
 import { ElNotification } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import { StorageConfig } from '@/utils/storage/storage-config'
+
+/** 升级日志列表类型（懒加载 @/mock/upgrade/changeLog，避免约 21KB 更新日志进入首屏） */
+type UpgradeLogList = typeof import('@/mock/upgrade/changeLog')['upgradeLogList']
 
 /**
  * 版本管理器
@@ -112,9 +114,17 @@ class VersionManager {
   }
 
   /**
+   * 懒加载升级日志（仅在真正需要执行升级流程时加载）
+   */
+  private async loadUpgradeLogList(): Promise<UpgradeLogList> {
+    const { upgradeLogList } = await import('@/mock/upgrade/changeLog')
+    return upgradeLogList
+  }
+
+  /**
    * 检查是否需要重新登录
    */
-  private shouldRequireReLogin(storedVersion: string): boolean {
+  private shouldRequireReLogin(storedVersion: string, upgradeLogList: UpgradeLogList): boolean {
     const normalizedCurrent = this.normalizeVersion(StorageConfig.CURRENT_VERSION)
     const normalizedStored = this.normalizeVersion(storedVersion)
 
@@ -129,7 +139,7 @@ class VersionManager {
   /**
    * 构建升级通知消息
    */
-  private buildUpgradeMessage(requireReLogin: boolean): string {
+  private buildUpgradeMessage(requireReLogin: boolean, upgradeLogList: UpgradeLogList): string {
     const { title: content } = upgradeLogList.value[0]
 
     const messageParts = [
@@ -198,13 +208,15 @@ class VersionManager {
     legacyStorage: ReturnType<typeof this.findLegacyStorage>
   ): Promise<void> {
     try {
+      const upgradeLogList = await this.loadUpgradeLogList()
+
       if (!upgradeLogList.value.length) {
         console.warn('[Upgrade] 升级日志列表为空')
         return
       }
 
-      const requireReLogin = this.shouldRequireReLogin(storedVersion)
-      const message = this.buildUpgradeMessage(requireReLogin)
+      const requireReLogin = this.shouldRequireReLogin(storedVersion, upgradeLogList)
+      const message = this.buildUpgradeMessage(requireReLogin, upgradeLogList)
 
       // 显示升级通知
       this.showUpgradeNotification(message)

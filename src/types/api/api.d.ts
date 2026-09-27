@@ -99,6 +99,8 @@ declare namespace Api {
       userName: string
       role: number
       nickName: string
+      /** 性别（后端列表接口未返回时为空） */
+      userGender?: string
       userPhone: string
       userEmail: string
       userRoles: string[]
