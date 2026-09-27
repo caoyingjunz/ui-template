@@ -12,6 +12,11 @@ export interface K8sPod {
     nodeName?: string
     containers?: Array<{
       name?: string
+      image?: string
+      resources?: {
+        requests?: { cpu?: string; memory?: string }
+        limits?: { cpu?: string; memory?: string }
+      }
     }>
   }
   status?: {

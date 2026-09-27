@@ -531,15 +531,7 @@
           }
         }
       })
-      .filter(
-        (
-          item
-        ): item is {
-          name: string
-          value?: string
-          valueFrom?: Record<string, { name: string; key: string }>
-        } => item !== null
-      )
+      .filter((item): item is NonNullable<typeof item> => item !== null)
   }
 
   function parseCommandLines(text: string): string[] {
@@ -752,12 +744,7 @@
         }
         return { name, emptyDir: {} }
       })
-      .filter(
-        (
-          v
-        ): v is { name: string; emptyDir?: Record<string, never>; configMap?: { name: string } } =>
-          v !== null
-      )
+      .filter((v): v is NonNullable<typeof v> => v !== null)
     return {
       apiVersion: 'apps/v1',
       kind: 'Deployment',
@@ -784,7 +771,7 @@
             : { type: 'Recreate' },
         template: {
           metadata: {
-            labels: { app: appLabel, ...finalLabels }
+            labels: { ...finalLabels }
           },
           spec: {
             containers: [

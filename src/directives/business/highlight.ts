@@ -42,7 +42,48 @@
  */
 
 import { App, Directive } from 'vue'
-import hljs from 'highlight.js'
+// 按需引入 highlight.js 核心与语言包，避免全量语言包（190+ 语言，约 1.6MB）进入首屏
+// 注意：highlight.js 11 未提供 vue 语言，Vue SFC 会被回落为 xml/html 识别
+import hljs from 'highlight.js/lib/core'
+import bash from 'highlight.js/lib/languages/bash'
+import css from 'highlight.js/lib/languages/css'
+import dockerfile from 'highlight.js/lib/languages/dockerfile'
+import go from 'highlight.js/lib/languages/go'
+import java from 'highlight.js/lib/languages/java'
+import javascript from 'highlight.js/lib/languages/javascript'
+import json from 'highlight.js/lib/languages/json'
+import markdown from 'highlight.js/lib/languages/markdown'
+import plaintext from 'highlight.js/lib/languages/plaintext'
+import python from 'highlight.js/lib/languages/python'
+import sql from 'highlight.js/lib/languages/sql'
+import typescript from 'highlight.js/lib/languages/typescript'
+import xml from 'highlight.js/lib/languages/xml'
+import yaml from 'highlight.js/lib/languages/yaml'
+
+// 注册语言：xml 同时提供 html/xhtml/svg 等别名
+const languages = {
+  bash,
+  css,
+  dockerfile,
+  go,
+  java,
+  javascript,
+  json,
+  markdown,
+  plaintext, // 含 text / txt 别名
+  python,
+  sql,
+  typescript,
+  xml,
+  yaml
+}
+
+Object.entries(languages).forEach(([name, language]) => {
+  hljs.registerLanguage(name, language)
+})
+
+// highlight.js 11 未提供 vue 语言包，项目内代码块使用 language-vue，复用 xml 语法近似高亮
+hljs.registerAliases(['vue'], { languageName: 'xml' })
 
 export type HighlightDirective = Directive<HTMLElement>
 

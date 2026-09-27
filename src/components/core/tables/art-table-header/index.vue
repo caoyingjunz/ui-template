@@ -1,4 +1,4 @@
-<!-- 表格头部，包含表格大小、刷新、全屏、列设置、其他设置 -->
+<!-- 表格头部，包含搜索、刷新、列设置、其他设置 -->
 <template>
   <div class="flex-cb max-md:!block" id="art-table-header">
     <div class="flex-wrap min-w-0 flex-1">
@@ -24,33 +24,6 @@
           icon="ri:refresh-line"
           :class="loading && isManualRefresh ? 'animate-spin text-g-600' : ''"
         />
-      </div>
-
-      <ElDropdown v-if="shouldShow('size')" @command="handleTableSizeChange">
-        <div class="button">
-          <ArtSvgIcon icon="ri:arrow-up-down-fill" />
-        </div>
-        <template #dropdown>
-          <ElDropdownMenu>
-            <div
-              v-for="item in tableSizeOptions"
-              :key="item.value"
-              class="table-size-btn-item [&_.el-dropdown-menu__item]:!mb-[3px] last:[&_.el-dropdown-menu__item]:!mb-0"
-            >
-              <ElDropdownItem
-                :key="item.value"
-                :command="item.value"
-                :class="tableSize === item.value ? '!bg-g-300/55' : ''"
-              >
-                {{ item.label }}
-              </ElDropdownItem>
-            </div>
-          </ElDropdownMenu>
-        </template>
-      </ElDropdown>
-
-      <div v-if="shouldShow('fullscreen')" class="button" @click="toggleFullScreen">
-        <ArtSvgIcon :icon="isFullScreen ? 'ri:fullscreen-exit-line' : 'ri:fullscreen-line'" />
       </div>
 
       <!-- 列设置 -->
@@ -123,9 +96,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, onMounted, onUnmounted } from 'vue'
+  import { computed, ref } from 'vue'
   import { storeToRefs } from 'pinia'
-  import { TableSizeEnum } from '@/enums/formEnum'
   import { useTableStore } from '@/store/modules/table'
   import { VueDraggable } from 'vue-draggable-plus'
   import { useI18n } from 'vue-i18n'
@@ -143,8 +115,6 @@
     showBorder?: boolean
     /** 表头背景 */
     showHeaderBackground?: boolean
-    /** 全屏 class */
-    fullClass?: string
     /** 组件布局，子组件名用逗号分隔 */
     layout?: string
     /** 加载中 */
@@ -157,8 +127,7 @@
     showZebra: true,
     showBorder: true,
     showHeaderBackground: true,
-    fullClass: 'art-page-view',
-    layout: 'search,refresh,size,fullscreen,columns,settings',
+    layout: 'search,refresh,columns,settings',
     showSearchBar: undefined
   })
 
@@ -194,15 +163,8 @@
     col.visible = boolValue
   }
 
-  /** 表格大小选项配置 */
-  const tableSizeOptions = [
-    { value: TableSizeEnum.SMALL, label: t('table.sizeOptions.small') },
-    { value: TableSizeEnum.DEFAULT, label: t('table.sizeOptions.default') },
-    { value: TableSizeEnum.LARGE, label: t('table.sizeOptions.large') }
-  ]
-
   const tableStore = useTableStore()
-  const { tableSize, isZebra, isBorder, isHeaderBackground } = storeToRefs(tableStore)
+  const { isZebra, isBorder, isHeaderBackground } = storeToRefs(tableStore)
 
   /** 解析 layout 属性，转换为数组 */
   const layoutItems = computed(() => {
@@ -246,76 +208,8 @@
     emit('refresh')
   }
 
-  /**
-   * 表格大小变化处理
-   * @param command 表格大小枚举值
-   */
-  const handleTableSizeChange = (command: TableSizeEnum) => {
-    useTableStore().setTableSize(command)
-  }
-
   /** 是否手动点击刷新 */
   const isManualRefresh = ref(false)
-
-  /** 加载中 */
-  const isFullScreen = ref(false)
-
-  /** 保存原始的 overflow 样式，用于退出全屏时恢复 */
-  const originalOverflow = ref('')
-
-  /**
-   * 切换全屏状态
-   * 进入全屏时会隐藏页面滚动条，退出时恢复原状态
-   */
-  const toggleFullScreen = () => {
-    const el = document.querySelector(`.${props.fullClass}`)
-    if (!el) return
-
-    isFullScreen.value = !isFullScreen.value
-
-    if (isFullScreen.value) {
-      // 进入全屏：保存原始样式并隐藏滚动条
-      originalOverflow.value = document.body.style.overflow
-      document.body.style.overflow = 'hidden'
-      el.classList.add('el-full-screen')
-      tableStore.setIsFullScreen(true)
-    } else {
-      // 退出全屏：恢复原始样式
-      document.body.style.overflow = originalOverflow.value
-      el.classList.remove('el-full-screen')
-      tableStore.setIsFullScreen(false)
-    }
-  }
-
-  /**
-   * ESC键退出全屏的事件处理器
-   * 需要保存引用以便在组件卸载时正确移除监听器
-   */
-  const handleEscapeKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isFullScreen.value) {
-      toggleFullScreen()
-    }
-  }
-
-  /** 组件挂载时注册全局事件监听器 */
-  onMounted(() => {
-    document.addEventListener('keydown', handleEscapeKey)
-  })
-
-  /** 组件卸载时清理资源 */
-  onUnmounted(() => {
-    // 移除事件监听器
-    document.removeEventListener('keydown', handleEscapeKey)
-
-    // 如果组件在全屏状态下被卸载，恢复页面滚动状态
-    if (isFullScreen.value) {
-      document.body.style.overflow = originalOverflow.value
-      const el = document.querySelector(`.${props.fullClass}`)
-      if (el) {
-        el.classList.remove('el-full-screen')
-      }
-    }
-  })
 </script>
 
 <style scoped>

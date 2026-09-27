@@ -1,0 +1,56 @@
+/*
+ * 标准表单弹窗模板（全局样式，非 scoped，直接全局生效）
+ *
+ * 用途：为所有「表单类」ElDialog（创建/编辑对话框等）提供统一的基础骨架样式，
+ *       保证全站弹窗视觉一致，避免每个页面复制粘贴一份相同规格的样式。
+ *
+ * 使用方式：
+ *   - ElDialog 挂 class="standard-form-dialog"（建议 width="560px" align-center destroy-on-close）
+ *   - ElForm   挂 class="standard-form-dialog__form"（建议 label-position="right"）
+ *   - 第一个 ElFormItem 挂 class="standard-form-dialog__form-first"
+ *   页面特有样式（如 form-tip、下拉+刷新按钮）仍写在页面 scoped 内，本模板只管基础骨架。
+ */
+
+/* 弹窗骨架：body/footer 水平留白 16px，避免默认 padding 导致右侧空隙过大 */
+.standard-form-dialog .el-dialog__body {
+  padding: 10px 16px 12px 16px !important;
+}
+
+.standard-form-dialog .el-dialog__footer {
+  padding: 12px 16px 16px 16px !important;
+}
+
+/* 表单项内容限宽，避免超宽 input 拉满弹窗 */
+.standard-form-dialog .el-form-item__content {
+  max-width: 480px;
+}
+
+/* 表单：顶部留白 + label/控件/错误提示统一 12px */
+.standard-form-dialog__form {
+  padding-top: 12px;
+}
+
+.standard-form-dialog__form .el-form-item__label {
+  font-size: 12px;
+  color: var(--el-text-color-regular);
+  padding-right: 12px;
+}
+
+.standard-form-dialog__form .el-input__inner,
+.standard-form-dialog__form .el-input__wrapper,
+.standard-form-dialog__form .el-select__wrapper,
+.standard-form-dialog__form .el-select .el-select__selected-item,
+.standard-form-dialog__form .el-form-item__error {
+  font-size: 12px;
+}
+
+/* 单选项（ElRadio）文字统一 12px */
+.standard-form-dialog__form .el-radio,
+.standard-form-dialog__form .el-radio .el-radio__label {
+  font-size: 12px;
+}
+
+/* 首项辅助类：挂第一个 ElFormItem 上，微调顶部间距 */
+.standard-form-dialog__form-first {
+  margin-top: 6px;
+}

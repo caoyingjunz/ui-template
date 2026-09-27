@@ -1,0 +1,71 @@
+/*
+ * 表格页 Tab 模板（全局样式，非 scoped，直接全局生效）
+ *
+ * 用途：列表页需要双 Tab / 多 Tab 切换（如「列表 / 任务」）时，为 Tab 头与
+ *       flex 骨架提供统一规格，避免各页面各写一份。类名按页面业务前缀命名，
+ *       若不覆写可直接给 ElTabs 挂 class="page-tabs"。
+ *
+ * 结构约定（骨架顺序）：
+ *   页面根 div → 说明条（ElAlert，模板类 page-notice）
+ *              → 工具栏（在 ElCard 之外、Tab 之上）
+ *              → ElCard( ElTabs → ElTabPane → ArtTable )
+ *   - 多个 Tab 各自的工具栏用 v-if="activeTab === 'xxx'" / v-else 在卡片外切换，
+ *     ElTabPane 内只放表格
+ *   - 工具栏移出卡片后，与说明条的间距只剩说明条自身 margin，必要时另行补 margin
+ *   - 工具栏在卡片外时，「说明条关闭后工具栏上移」的联动 class 两个 Tab 的工具栏都要带
+ *
+ * 说明：本文件是全局样式，故不使用 Vue SFC 的 :deep()（在全局样式中无效），
+ *       统一写成普通后代选择器。
+ */
+
+/* Tab 头：紧贴表格，底部 1px 浅分隔线 */
+.page-tabs .el-tabs__header {
+  flex-shrink: 0;
+  margin: 0 0 4px;
+}
+
+.page-tabs .el-tabs__nav-wrap::after {
+  height: 1px;
+  background-color: var(--el-border-color-lighter);
+}
+
+/* Tab 首项有 18px 左内边距是刻意的（文字不与卡片左缘对齐），勿当 bug 修掉 */
+.page-tabs .el-tabs__item {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--el-text-color-regular);
+}
+
+.page-tabs .el-tabs__item.is-active {
+  color: var(--el-color-primary);
+  font-weight: 600;
+}
+
+.page-tabs .el-tabs__active-bar {
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+}
+
+/* flex 骨架：tabs 撑满卡片高度，pane 内表格自适应 */
+.page-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.page-tabs > .el-tabs__content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.page-tabs .el-tab-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}

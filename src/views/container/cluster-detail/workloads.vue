@@ -545,6 +545,7 @@
   } from 'element-plus'
   import { CopyDocument, Loading } from '@element-plus/icons-vue'
   import yaml from 'js-yaml'
+  import type { ColumnOption } from '@/types/component'
   import ArtButtonMore, {
     type ButtonMoreItem
   } from '@/components/core/forms/art-button-more/index.vue'
@@ -1129,7 +1130,7 @@
   })
 
   const stsVisibleColumns = computed(() =>
-    stsColumns.value.filter((c) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
+    stsColumns.value.filter((c: ColumnOption) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function onStsNsChange() {
@@ -1326,7 +1327,7 @@
   })
 
   const dsVisibleColumns = computed(() =>
-    dsColumns.value.filter((c) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
+    dsColumns.value.filter((c: ColumnOption) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function onDsNsChange() {
@@ -1678,7 +1679,7 @@
   })
 
   const jobVisibleColumns = computed(() =>
-    jobColumns.value.filter((c) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
+    jobColumns.value.filter((c: ColumnOption) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function onJobNsChange() {
@@ -1966,7 +1967,7 @@
   })
 
   const cjVisibleColumns = computed(() =>
-    cjColumns.value.filter((c) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
+    cjColumns.value.filter((c: ColumnOption) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function onCjNsChange() {
@@ -2474,7 +2475,7 @@
   })
 
   const deplVisibleColumns = computed(() =>
-    deplColumns.value.filter((c) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
+    deplColumns.value.filter((c: ColumnOption) => !(globalNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function onDeplSelectionChange(rows: Array<(K8sDeployment | K8sPod) & { rowKey: string }>) {

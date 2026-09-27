@@ -857,7 +857,7 @@
         namespaced: false,
         limit: 500
       })
-      eventAll.value = items as K8sEventRow[]
+      eventAll.value = items.items as K8sEventRow[]
     } catch (e: unknown) {
       ElMessage.error(e instanceof Error ? e.message : '加载事件失败')
       eventAll.value = []

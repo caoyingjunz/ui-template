@@ -314,8 +314,7 @@
     "container": {
       "title": "Container Service",
       "cluster": "Cluster",
-      "clusterDetail": "Cluster Detail",
-      "plan": "Deploy"
+      "clusterDetail": "Cluster Detail"
     },
     "help": {
       "title": "Help Center",
@@ -337,11 +336,6 @@
       "searchSelectPlaceholder": "Please select"
     },
     "selection": "Select",
-    "sizeOptions": {
-      "small": "Compact",
-      "default": "Default",
-      "large": "Loose"
-    },
     "column": {
       "selection": "Select",
       "expand": "Expand",

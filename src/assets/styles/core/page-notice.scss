@@ -1,0 +1,59 @@
+/**
+ * 页面说明框模板（.page-notice，全站表单/列表页顶部统一提示条）
+ * 用法：<ElAlert type="info" closable show-icon class="page-notice" description="..." style="margin: 5px 0 20px 0" />
+ * 仅 info 蓝一套（页面顶说明框语义），其余 type 走 Element Plus 默认
+ */
+
+.page-notice.el-alert {
+  margin: 15px 0;
+  height: 45px;
+  padding: 10px 16px 10px 10px !important;
+  box-sizing: border-box;
+  background-color: #ecf5ff !important;
+  border: none !important;
+  border-radius: 4px;
+  align-items: center;
+}
+
+.page-notice.el-alert .el-alert__content {
+  padding: 0;
+  line-height: 1.5;
+}
+
+.page-notice.el-alert .el-alert__icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 4px !important;
+  color: #0958d9 !important;
+  flex-shrink: 0;
+}
+
+.page-notice.el-alert .el-alert__icon .el-icon,
+.page-notice.el-alert .el-alert__icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 20px !important;
+  color: #0958d9 !important;
+}
+
+.page-notice.el-alert .el-alert__description {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #0958d9 !important;
+}
+
+html.dark .page-notice.el-alert {
+  background-color: rgb(64 158 255 / 12%) !important;
+}
+
+html.dark .page-notice.el-alert .el-alert__description {
+  color: #a8cfff !important;
+}
+
+html.dark .page-notice.el-alert .el-alert__icon,
+html.dark .page-notice.el-alert .el-alert__icon .el-icon,
+html.dark .page-notice.el-alert .el-alert__icon svg {
+  color: #0958d9 !important;
+}

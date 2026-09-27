@@ -2,8 +2,33 @@ node_modules
 .DS_Store
 dist
 dist-ssr
+dist-*
 *.local
 .cursorrules
 
 .auto-import.json
 .vscode
+
+# 编辑器本地配置（.idea 曾被跟踪，含旧项目名 iml，已移出索引）
+.idea/
+
+# 构建 / 分析产物
+stats.html
+*.tsbuildinfo
+
+# 缓存
+.eslintcache
+.stylelintcache
+
+# 日志
+*.log
+
+# 测试覆盖率
+coverage/
+
+# 编辑器本地历史
+.history/
+
+# 本地环境覆盖（.env / .env.development / .env.production 仍跟踪）
+.env.local
+.env.*.local

@@ -62,16 +62,6 @@ export const containerRoutes: AppRouteRecord = {
       }
     },
     {
-      path: 'plan',
-      name: 'Plan',
-      component: '/container/plan/index',
-      meta: {
-        title: 'menus.container.plan',
-        icon: 'ri:rocket-line',
-        keepAlive: true
-      }
-    },
-    {
       path: 'deployment-detail',
       name: 'DeploymentDetail',
       component: '/container/cluster-detail/deployment-detail/index',
@@ -137,16 +127,6 @@ export const containerRoutes: AppRouteRecord = {
       component: '/container/cluster-detail/deployment-detail/index',
       meta: {
         title: '工作负载详情',
-        isHide: true,
-        keepAlive: false
-      }
-    },
-    {
-      path: 'cluster/deploy',
-      name: 'ClusterDeploy',
-      component: '/container/cluster/deploy/index',
-      meta: {
-        title: '新建部署集群',
         isHide: true,
         keepAlive: false
       }

@@ -1,138 +1,88 @@
 <template>
   <ElDialog
     v-model="visibleInner"
-    :title="phase === 'choose' ? '选择集群类型' : '导入集群'"
-    :width="phase === 'choose' ? '720px' : '640px'"
+    title="导入集群"
+    width="640px"
     align-center
     destroy-on-close
-    :class="['cluster-add-dialog', { 'cluster-add-dialog--import': phase === 'import' }]"
+    class="cluster-add-dialog cluster-add-dialog--import"
     @closed="onClosed"
   >
-    <template v-if="phase === 'choose'">
-      <div class="type-grid">
-        <button
-          type="button"
-          class="type-card"
-          :class="{ 'is-active': picked === 'import' }"
-          @click="picked = 'import'"
-        >
-          <div class="type-card-inner">
-            <div class="type-title">导入集群</div>
-            <p class="type-desc"
-              >上传或粘贴 KubeConfig，将现有 Kubernetes 注册到容器服务统一管理。</p
+    <ElForm
+      ref="importFormRef"
+      :model="importForm"
+      :rules="importRules"
+      label-width="100px"
+      label-position="right"
+      class="import-form"
+    >
+      <ElFormItem label="集群名称" prop="aliasName" class="import-form__first">
+        <ElInput
+          v-model="importForm.aliasName"
+          placeholder="集群名称，例如生产环境 k8s 集群"
+          clearable
+        />
+      </ElFormItem>
+      <ElFormItem label="KubeConfig" prop="kubeRaw" class="kube-form-row">
+        <div class="kube-config-block">
+          <div v-show="kubeInputMode === 'file'" class="kube-panel">
+            <ElUpload
+              ref="uploadRef"
+              class="kube-upload"
+              drag
+              :auto-upload="false"
+              :limit="1"
+              :on-change="onKubeFile"
+              :on-remove="onKubeRemove"
+              accept=".yaml,.yml,.conf,.config,text/plain"
             >
-            <ul class="type-bullets">
-              <li>多云管理，灵活接入各种计算资源</li>
-              <li>对接现有 DevOps 系统，实现多云发布</li>
-              <li>完全兼容开源 Kubernetes 集群</li>
-              <li>生态开源 多云管理</li>
-            </ul>
+              <ElIcon class="upload-icon"><UploadFilled /></ElIcon>
+              <div class="el-upload__text">将 kubeconfig 拖到此处，或 <em>点击选择文件</em></div>
+            </ElUpload>
           </div>
-        </button>
-        <button
-          type="button"
-          class="type-card"
-          :class="{ 'is-active': picked === 'self' }"
-          @click="picked = 'self'"
-        >
-          <div class="type-card-inner">
-            <div class="type-title">部署集群</div>
-            <p class="type-desc"
-              >通过向导配置地域、网络、节点等信息，创建部署计划并安装 Kubernetes。</p
-            >
-            <ul class="type-bullets">
-              <li>标准原生 Kubernets 集群、丰富的自定义接口</li>
-              <li>适用于高稳定性、定制化集群业务</li>
-              <li>灵活的集群网络、容器调度</li>
-              <li>标准K8s集群 支持原生节点</li>
-            </ul>
-          </div>
-        </button>
-      </div>
-    </template>
 
-    <template v-else>
-      <ElForm
-        ref="importFormRef"
-        :model="importForm"
-        :rules="importRules"
-        label-width="100px"
-        label-position="right"
-        class="import-form"
-      >
-        <ElFormItem label="集群名称" prop="aliasName" class="import-form__first">
-          <ElInput
-            v-model="importForm.aliasName"
-            placeholder="集群名称，例如生产环境 k8s 集群"
-            clearable
-          />
-        </ElFormItem>
-        <ElFormItem label="KubeConfig" prop="kubeRaw" class="kube-form-row">
-          <div class="kube-config-block">
-            <div v-show="kubeInputMode === 'file'" class="kube-panel">
-              <ElUpload
-                ref="uploadRef"
-                class="kube-upload"
-                drag
-                :auto-upload="false"
-                :limit="1"
-                :on-change="onKubeFile"
-                :on-remove="onKubeRemove"
-                accept=".yaml,.yml,.conf,.config,text/plain"
-              >
-                <ElIcon class="upload-icon"><UploadFilled /></ElIcon>
-                <div class="el-upload__text">将 kubeconfig 拖到此处，或 <em>点击选择文件</em></div>
-              </ElUpload>
-            </div>
-
-            <div v-show="kubeInputMode === 'paste'" class="kube-panel">
-              <ElInput
-                v-model="importForm.kubeRaw"
-                type="textarea"
-                :rows="10"
-                placeholder="请粘贴 kubeconfig 全文"
-                class="kube-textarea"
-                spellcheck="false"
-              />
-            </div>
-
-            <ElRadioGroup v-model="kubeInputMode" class="kube-mode-group">
-              <ElRadioButton label="file">上传文件</ElRadioButton>
-              <ElRadioButton label="paste">粘贴内容</ElRadioButton>
-            </ElRadioGroup>
-          </div>
-        </ElFormItem>
-        <ElFormItem label="删除保护" class="protect-form-row">
-          <div class="protect-block">
-            <ElSwitch
-              v-model="importForm.protected"
-              inline-prompt
-              active-text="开"
-              inactive-text="关"
+          <div v-show="kubeInputMode === 'paste'" class="kube-panel">
+            <ElInput
+              v-model="importForm.kubeRaw"
+              type="textarea"
+              :rows="10"
+              placeholder="请粘贴 kubeconfig 全文"
+              class="kube-textarea"
+              spellcheck="false"
             />
-            <p class="protect-hint">开启后不允许删除该集群</p>
           </div>
-        </ElFormItem>
-        <ElFormItem label="描述" class="desc-form-row">
-          <ElInput
-            v-model="importForm.description"
-            type="textarea"
-            :autosize="{ minRows: 4, maxRows: 10 }"
-            placeholder="可选"
+
+          <ElRadioGroup v-model="kubeInputMode" class="kube-mode-group">
+            <ElRadioButton label="file">上传文件</ElRadioButton>
+            <ElRadioButton label="paste">粘贴内容</ElRadioButton>
+          </ElRadioGroup>
+        </div>
+      </ElFormItem>
+      <ElFormItem label="删除保护" class="protect-form-row">
+        <div class="protect-block">
+          <ElSwitch
+            v-model="importForm.protected"
+            inline-prompt
+            active-text="开"
+            inactive-text="关"
           />
-        </ElFormItem>
-      </ElForm>
-    </template>
+          <p class="protect-hint">开启后不允许删除该集群</p>
+        </div>
+      </ElFormItem>
+      <ElFormItem label="描述" class="desc-form-row">
+        <ElInput
+          v-model="importForm.description"
+          type="textarea"
+          :autosize="{ minRows: 4, maxRows: 10 }"
+          placeholder="可选"
+        />
+      </ElFormItem>
+    </ElForm>
 
     <template #footer>
-      <div v-if="phase === 'choose'" class="dialog-footer-btns dialog-footer-btns--choose">
-        <ElButton @click="visibleInner = false">取消</ElButton>
-        <ElButton type="primary" :disabled="!picked" @click="onNextFromChoose">下一步</ElButton>
-      </div>
-      <div v-else class="dialog-footer-btns dialog-footer-btns--import">
+      <div class="dialog-footer-btns dialog-footer-btns--import">
         <ElButton :loading="pingLoading" @click="onPing">测试连接</ElButton>
         <div class="footer-right">
-          <ElButton @click="phase = 'choose'">上一步</ElButton>
           <ElButton type="primary" :loading="submitLoading" @click="onImportSubmit">确定</ElButton>
         </div>
       </div>
@@ -149,7 +99,6 @@
     UploadInstance
   } from 'element-plus'
   import { UploadFilled } from '@element-plus/icons-vue'
-  import { useRouter } from 'vue-router'
   import { encodeKubeConfigBase64, fetchCreateCluster, fetchPingCluster } from '@/api/container'
 
   defineOptions({ name: 'ClusterAddDialog' })
@@ -160,17 +109,10 @@
     success: []
   }>()
 
-  const router = useRouter()
-
   const visibleInner = computed({
     get: () => props.visible,
     set: (v) => emit('update:visible', v)
   })
-
-  type Phase = 'choose' | 'import'
-  const phase = ref<Phase>('choose')
-  type Pick = null | 'import' | 'self'
-  const picked = ref<Pick>(null)
 
   const kubeInputMode = ref<'file' | 'paste'>('file')
   const uploadRef = ref<UploadInstance>()
@@ -212,8 +154,6 @@
   const pingLoading = ref(false)
 
   function resetState() {
-    phase.value = 'choose'
-    picked.value = null
     kubeInputMode.value = 'file'
     importForm.aliasName = ''
     importForm.kubeRaw = ''
@@ -224,17 +164,6 @@
 
   function onClosed() {
     resetState()
-  }
-
-  function onNextFromChoose() {
-    if (picked.value === 'self') {
-      visibleInner.value = false
-      router.push('/container/cluster/deploy')
-      return
-    }
-    if (picked.value === 'import') {
-      phase.value = 'import'
-    }
   }
 
   function onKubeFile(file: UploadFile, _files: UploadFiles) {
@@ -306,65 +235,6 @@
 </script>
 
 <style scoped>
-  .type-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .type-card {
-    margin: 0;
-    padding: 0;
-    border: 1px solid var(--el-border-color);
-    border-radius: 10px;
-    background: var(--el-fill-color-blank);
-    cursor: pointer;
-    text-align: left;
-    transition:
-      border-color 0.2s,
-      box-shadow 0.2s,
-      background 0.2s;
-  }
-
-  .type-card:hover {
-    border-color: var(--el-color-primary-light-5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  }
-
-  .type-card.is-active {
-    border-color: var(--el-color-primary);
-    background: color-mix(in srgb, var(--el-color-primary) 8%, var(--el-fill-color-blank));
-    box-shadow: 0 0 0 1px var(--el-color-primary-light-7);
-  }
-
-  .type-card-inner {
-    padding: 20px 18px 22px;
-  }
-
-  .type-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--el-text-color-primary);
-    margin-bottom: 8px;
-  }
-
-  .type-desc {
-    margin: 0 0 12px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-    line-height: 1.55;
-  }
-
-  .type-bullets {
-    margin: 0;
-    padding-left: 18px;
-    font-size: 12px;
-    color: var(--el-text-color-regular);
-    line-height: 1.7;
-  }
-
   .import-form {
     padding-top: 12px;
   }
@@ -475,10 +345,6 @@
     width: 100%;
   }
 
-  .dialog-footer-btns--choose {
-    justify-content: flex-end;
-  }
-
   .dialog-footer-btns--import {
     justify-content: space-between;
   }
@@ -491,10 +357,6 @@
   }
 
   @media (max-width: 720px) {
-    .type-grid {
-      grid-template-columns: 1fr;
-    }
-
     .dialog-footer-btns--import {
       flex-direction: column;
       align-items: stretch;

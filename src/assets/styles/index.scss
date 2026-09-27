@@ -7,6 +7,18 @@
 // Element Plus 样式优化
 @use './core/el-ui.scss';
 
+// 页面说明框模板（.page-notice）
+@use './core/page-notice.scss';
+
+// 表格页 Tab 模板（.page-tabs）
+@use './core/page-tabs.scss';
+
+// 表格工具条与操作列模板（批量操作栏 / 操作列「更多」）
+@use './core/table-toolbar.scss';
+
+// 详情页 / 列表页骨架模板（.detail-page / .detail-card / .detail-hero / .kv-grid）
+@use './core/detail-page.scss';
+
 // Element Plus 暗黑主题
 @use './core/el-dark.scss';
 
@@ -21,3 +33,9 @@
 
 // 主题切换圆形扩散动画
 @use './core/theme-animation.scss';
+
+// 标准表单弹窗模板（所有表单类 ElDialog 统一复用）
+@use './custom/standard-form-dialog.scss';
+
+// 标准表单抽屉模板（编辑/详情配置类 ElDrawer 统一复用）
+@use './custom/standard-form-drawer.scss';

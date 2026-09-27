@@ -314,8 +314,7 @@
     "container": {
       "title": "容器服务",
       "cluster": "集群",
-      "clusterDetail": "集群详情",
-      "plan": "部署"
+      "clusterDetail": "集群详情"
     },
     "help": {
       "title": "帮助中心",
@@ -337,11 +336,6 @@
       "searchSelectPlaceholder": "请选择"
     },
     "selection": "选择",
-    "sizeOptions": {
-      "small": "紧凑",
-      "default": "默认",
-      "large": "宽松"
-    },
     "column": {
       "selection": "勾选",
       "expand": "展开",

@@ -127,6 +127,7 @@
   } from 'element-plus'
   import { CopyDocument } from '@element-plus/icons-vue'
   import yaml from 'js-yaml'
+  import type { ColumnOption } from '@/types/component'
   import { computed, h, inject, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useTable } from '@/hooks/core/useTable'
@@ -204,7 +205,7 @@
     ])
   }
 
-  function formatSvcPorts(ports: K8sService['spec']['ports']): string {
+  function formatSvcPorts(ports: NonNullable<K8sService['spec']>['ports']): string {
     if (!ports?.length) return '—'
     return ports.map(p => {
       const proto = p.protocol ?? 'TCP'
@@ -305,7 +306,7 @@
   })
 
   const svcVisibleColumns = computed(() =>
-    svcColumns.value.filter(c => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
+    svcColumns.value.filter((c: ColumnOption) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function runSvcSearch() {
@@ -392,7 +393,7 @@
   })
 
   const ingVisibleColumns = computed(() =>
-    ingColumns.value.filter(c => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
+    ingColumns.value.filter((c: ColumnOption) => !(selectedNamespace.value && c.prop === 'metadata.namespace'))
   )
 
   function runIngSearch() {
